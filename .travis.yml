@@ -19,7 +19,11 @@ addons:
 
 # Who needs exports when you can have travis do the work?
 env:
-  - PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"]
+- PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"] CRATE=bitstream
+- PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"] CRATE=codec
+- PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"] CRATE=data
+- PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"] CRATE=format
+- PATH=$HOME/.cargo/bin:$PATH CARGO_FEATURES_DEFAULT=["nightly"] CRATE=av
 
 before_script:
   - cargo install cargo-update || echo "cargo-update already installed"
@@ -29,10 +33,21 @@ before_script:
 # the main build
 script:
   - |
-      cargo build &&
-      cargo test &&
-      cargo bench &&
-      cargo doc
+      if [[ ${CRATE} != av ]]; then
+        cd ${CRATE}
+        cargo build &&
+        cargo test &&
+        cargo bench &&
+        cargo doc
+        cd ..
+      fi
+  - |
+      if [[ ${CRATE} == av ]]; then
+        cargo build &&
+        cargo test &&
+        cargo bench &&
+        cargo doc
+      fi
 
 after_success:
 # measure code coverage and upload to coveralls.io
