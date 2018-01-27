@@ -39,7 +39,7 @@ matrix:
             cargo test &&
             cargo bench &&
             cargo doc
-      after_success: cargo coveralls
+      after_success: cargo coveralls --all
 
 before_script:
   - cargo install cargo-update || echo "cargo-update already installed"
@@ -56,6 +56,6 @@ script:
       cargo doc
       cd ..
 
-after_success:
+# after_success:
 # measure code coverage and upload to coveralls.io
-  - cargo coveralls --package av-${CRATE}
+  # - cargo coveralls --package av-${CRATE}
