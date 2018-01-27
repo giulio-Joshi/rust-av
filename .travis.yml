@@ -18,17 +18,20 @@ addons:
       - kalakris-cmake
 
 # Who needs exports when you can have travis do the work?
+# Also setup job matrix
 env:
     global:
         - PATH=$HOME/.cargo/bin:$PATH
         - CARGO_FEATURES_DEFAULT=["nightly"]
+    matrix:
+        - CRATE=bitstream
+        - CRATE=codec
+        - CRATE=data
+        - CRATE=format
 
-# Set all the jobs includes sub crates and main av crate
+# Setup av crate since that job runs a bit differently
 matrix:
-    - env: CRATE=bitstream
-    - env: CRATE=codec
-    - env: CRATE=data
-    - env: CRATE=format
+    include:
     - env: CRATE=av
       script:
         - |
