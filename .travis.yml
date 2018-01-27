@@ -58,4 +58,4 @@ script:
 
 after_success:
 # measure code coverage and upload to coveralls.io
-  - cargo coveralls --packages ${CRATE}
+  - cargo coveralls --package ${CRATE}
