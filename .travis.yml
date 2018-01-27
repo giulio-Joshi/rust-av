@@ -22,12 +22,21 @@ env:
     global:
         - PATH=$HOME/.cargo/bin:$PATH
         - CARGO_FEATURES_DEFAULT=["nightly"]
-    matrix:
-        - CRATE=bitstream
-        - CRATE=codec
-        - CRATE=data
-        - CRATE=format
-        - CRATE=av
+
+# Set all the jobs includes sub crates and main av crate
+matrix:
+    - env: CRATE=bitstream
+    - env: CRATE=codec
+    - env: CRATE=data
+    - env: CRATE=format
+    - env: CRATE=av
+      script:
+        - |
+            cargo build &&
+            cargo test &&
+            cargo bench &&
+            cargo doc
+      after_success: cargo coveralls
 
 before_script:
   - cargo install cargo-update || echo "cargo-update already installed"
@@ -37,30 +46,13 @@ before_script:
 # the main build
 script:
   - |
-      if [[ ${CRATE} != av ]]; then
-        cd ${CRATE}
-        cargo build &&
-        cargo test &&
-        cargo bench &&
-        cargo doc
-        cd ..
-      fi
-  - |
-      if [[ ${CRATE} == av ]]; then
-        cargo build &&
-        cargo test &&
-        cargo bench &&
-        cargo doc
-      fi
+      cd ${CRATE}
+      cargo build &&
+      cargo test &&
+      cargo bench &&
+      cargo doc
+      cd ..
 
 after_success:
 # measure code coverage and upload to coveralls.io
-  - |
-      if [[ ${CRATE} != av ]]; then
-        cd ${CRATE}
-        cargo coveralls
-      fi
-  - |
-      if [[ ${CRATE} == av ]]; then
-        cargo coveralls
-      fi
+  - cargo coveralls --packages ${CRATE}
