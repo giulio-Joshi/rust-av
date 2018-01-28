@@ -13,6 +13,7 @@ addons:
       - libelf-dev
       - libdw-dev
       - binutils-dev
+      - libbfd-dev
       - cmake # also required for cargo-update
     sources:
       - kalakris-cmake
