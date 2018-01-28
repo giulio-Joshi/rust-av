@@ -13,7 +13,6 @@ addons:
       - libelf-dev
       - libdw-dev
       - binutils-dev
-      - libbfd-dev
       - cmake # also required for cargo-update
     sources:
       - kalakris-cmake
@@ -24,6 +23,7 @@ env:
     global:
         - PATH=$HOME/.cargo/bin:$PATH
         - CARGO_FEATURES_DEFAULT=["nightly"]
+        - RUST_BACKTRACE=1
     matrix:
         - CRATE=bitstream
         - CRATE=codec
@@ -36,25 +36,25 @@ matrix:
     - env: CRATE=av
       script:
         - |
-            cargo build &&
-            cargo test &&
-            cargo bench &&
-            cargo doc
-      after_success: cargo coveralls --all
+            cargo build --verbose &&
+            cargo test --verbose &&
+            cargo bench --verbose &&
+            cargo doc --verbose
+      after_success: cargo coveralls --all --verbose
 
 before_script:
-  - cargo install cargo-update || echo "cargo-update already installed"
-  - cargo install cargo-travis || echo "cargo-travis already installed"
-  - cargo install-update -a # update outdated cached binaries
+  - cargo install cargo-update --verbose || echo "cargo-update already installed"
+  - cargo install cargo-travis --verbose || echo "cargo-travis already installed"
+  - cargo install-update -a --verbose # update outdated cached binaries
 
 # the main build
 script:
   - |
       cd ${CRATE}
-      cargo build &&
-      cargo test &&
-      cargo bench &&
-      cargo doc
+      cargo build --verbose &&
+      cargo test --verbose &&
+      cargo bench --verbose &&
+      cargo --verbose doc
       cd ..
 
 # after_success:
